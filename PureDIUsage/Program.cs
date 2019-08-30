@@ -5,6 +5,8 @@ namespace Demo.PureDIUsage
 {
     public static class Program
     {
+        // Composition Root
+        // Pure DI
         public static void Main()
         {
             // 准备数据：链ID
@@ -31,7 +33,9 @@ namespace Demo.PureDIUsage
             {
                 Logger = new ConsoleLogger()
             };
+            
             var mineService = new MineService(transactionPool, blockChainService, transactionExecutingService);
+            
             //     生产创世区块
             var genesisBlock = mineService.Mine();
             //     把创世区块添加到链上
@@ -65,6 +69,5 @@ namespace Demo.PureDIUsage
             }
             // 实际上，共识决定了谁应该在什么时候出块，以及收到一个区块以后该怎么验证这个区块的合法性
         }
-
     }
 }

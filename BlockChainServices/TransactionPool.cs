@@ -10,6 +10,7 @@ namespace Demo.BlockChainServices
 
         public TransactionPool()
         {
+            // Null Object Pattern.
             Logger = NullLogger.Instance;
         }
 

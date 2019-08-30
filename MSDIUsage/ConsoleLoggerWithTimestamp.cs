@@ -2,13 +2,13 @@ using System;
 using System.Runtime.CompilerServices;
 using Demo.BlockChainServices;
 
-namespace Demo.PureDIUsage
+namespace Demo.MSDIUsage
 {
-    public class ConsoleLogger : ILogger
+    public class ConsoleLoggerWithTimestamp : ILogger
     {
         public void Log(string message, [CallerMemberName] string caller = null)
         {
-            Console.WriteLine(message);
+            Console.WriteLine($"Caller: {caller}\n[{DateTime.UtcNow:HH:mm:ss.ffff}] {message}");
         }
     }
 }
