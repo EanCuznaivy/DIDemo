@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Demo.BlockChainServices;
+﻿using Demo.BlockChainServices;
 using Demo.BlockEntities;
 
 namespace Demo.PureDIUsage
@@ -18,7 +16,7 @@ namespace Demo.PureDIUsage
             {
                 Logger = new ConsoleLogger()
             };
-            foreach (var genesisTransaction in GetGenesisTransactions())
+            foreach (var genesisTransaction in TransactionGenerationHelper.GetGenesisTransactions())
             {
                 transactionPool.AddTransaction(genesisTransaction);
             }
@@ -52,7 +50,7 @@ namespace Demo.PureDIUsage
             while (count > 0)
             {
                 // 交易应该是从网络收取的，这里随机生成一些
-                var txs = GetSomeRandomTransactions();
+                var txs = TransactionGenerationHelper.GetSomeRandomTransactions();
                 // 正常流程：从网络中收到交易，验证交易，然后丢进交易池
                 foreach (var tx in txs)
                 {
@@ -68,58 +66,5 @@ namespace Demo.PureDIUsage
             // 实际上，共识决定了谁应该在什么时候出块，以及收到一个区块以后该怎么验证这个区块的合法性
         }
 
-        private static List<Transaction> GetGenesisTransactions()
-        {
-            return new List<Transaction>
-            {
-                new Transaction
-                {
-                    From = Address.Zero,
-                    To = Address.Zero,
-                    MethodName = "DeploySystemSmartContract",
-                    Params = new byte[] {1}, // 假装这是共识合约的数据
-                    Timestamp = DateTimeOffset.UtcNow
-                },
-                new Transaction
-                {
-                    From = Address.Zero,
-                    To = Address.Zero,
-                    MethodName = "DeploySystemSmartContract",
-                    Params = new byte[] {2}, // 假装这是多资产合约的数据
-                    Timestamp = DateTimeOffset.UtcNow
-                }
-            };
-        }
-
-        private static List<Transaction> GetSomeRandomTransactions()
-        {
-            return new List<Transaction>
-            {
-                new Transaction
-                {
-                    From = Address.Generate(),
-                    To = Address.Generate(),
-                    MethodName = "AAA",
-                    Params = new byte[] {1},
-                    Timestamp = DateTimeOffset.UtcNow
-                },
-                new Transaction
-                {
-                    From = Address.Generate(),
-                    To = Address.Generate(),
-                    MethodName = "BBB",
-                    Params = new byte[] {2},
-                    Timestamp = DateTimeOffset.UtcNow
-                },
-                new Transaction
-                {
-                    From = Address.Generate(),
-                    To = Address.Generate(),
-                    MethodName = "CCC",
-                    Params = new byte[] {3},
-                    Timestamp = DateTimeOffset.UtcNow
-                },
-            };
-        }
     }
 }

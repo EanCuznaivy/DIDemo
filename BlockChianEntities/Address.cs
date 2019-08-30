@@ -35,5 +35,34 @@ namespace Demo.BlockEntities
         {
             return FromRawBytes(Guid.NewGuid().ToByteArray());
         }
+
+        public string ToHex(bool withPrefix = false)
+        {
+            var offset = withPrefix ? 2 : 0;
+            var length = Value.Length * 2 + offset;
+            var c = new char[length];
+
+            if (withPrefix)
+            {
+                c[0] = '0';
+                c[1] = 'x';
+            }
+
+            for (int bx = 0, cx = offset; bx < Value.Length; ++bx, ++cx)
+            {
+                var b = (byte) (Value[bx] >> 4);
+                c[cx] = (char) (b > 9 ? b + 0x37 + 0x20 : b + 0x30);
+
+                b = (byte) (Value[bx] & 0x0F);
+                c[++cx] = (char) (b > 9 ? b + 0x37 + 0x20 : b + 0x30);
+            }
+
+            return new string(c);
+        }
+
+        public override string ToString()
+        {
+            return ToHex();
+        }
     }
 }

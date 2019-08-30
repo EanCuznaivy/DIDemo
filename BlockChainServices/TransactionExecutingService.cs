@@ -13,16 +13,22 @@ namespace Demo.BlockChainServices
         }
 
         // TODO: 控制执行交易的总时间，或者每一次执行的交易数量
-        public void FillBlock(ref IBlock block, IEnumerable<Transaction> transactions)
+        public List<Hash> FillBlock(ref IBlock block, List<Transaction> transactions)
         {
+            var executedTxIds = new List<Hash>();
             foreach (var transaction in transactions)
             {
                 if (ExecuteTransaction(transaction))
                 {
-                    block.BlockHeader.TransactionIds.Add(transaction.GetTransactionId());
+                    var txId = transaction.GetTransactionId();
+                    block.BlockHeader.TransactionIds.Add(txId);
                     block.BlockBody.Transactions.Add(transaction);
+                    executedTxIds.Add(txId);
+                    Logger.Log($"[TxExecutingService] Executed transaction: {transaction}");
                 }
             }
+
+            return executedTxIds;
         }
 
         // TODO: 执行过程

@@ -14,33 +14,37 @@ namespace Demo.BlockChainServices
         }
 
         private readonly List<Transaction> _transactions = new List<Transaction>();
-        public List<Hash> TransactionIds => _transactions.Select(t => t.GetTransactionId()).ToList();
+        public List<string> TransactionIds => _transactions.Select(t => t.GetTransactionId().ToHex()).ToList();
 
         public void AddTransaction(Transaction transaction)
         {
-            if (!TransactionIds.Contains(transaction.GetTransactionId()))
+            // 实际上交易在进入交易池之前也要过一遍验证，这里只阻止了交易重复进入
+            if (!TransactionIds.Contains(transaction.GetTransactionId().ToHex()))
             {
                 _transactions.Add(transaction);
+                Logger.Log($"[TxPool] Added transaction {transaction} to pool.");
             }
         }
 
         public Transaction GetTransactionById(Hash transactionId)
         {
-            return TransactionIds.Contains(transactionId)
-                ? _transactions.First(t => t.GetTransactionId() == transactionId)
+            return TransactionIds.Contains(transactionId.ToHex())
+                ? _transactions.First(t => t.GetTransactionId().ToHex() == transactionId.ToHex())
                 : null;
         }
 
-        public IEnumerable<Transaction> GetAllTransactions()
+        public List<Transaction> GetAllTransactions()
         {
             return _transactions;
         }
 
-        public void RemoveTransactions(IEnumerable<Transaction> transactions)
+        public void RemoveTransactions(List<Hash> txIds)
         {
-            foreach (var transaction in transactions)
+            foreach (var id in txIds)
             {
-                _transactions.Remove(transaction);
+                var tx = _transactions.First(t => t.GetTransactionId().ToHex() == id.ToHex());
+                _transactions.Remove(tx);
+                Logger.Log($"[TxPool] Removed transaction {tx} from pool.");
             }
         }
     }

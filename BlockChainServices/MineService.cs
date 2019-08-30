@@ -5,6 +5,8 @@ namespace Demo.BlockChainServices
 {
     public class MineService : IMineService
     {
+        public ILogger Logger { get; set; }
+
         private readonly ITransactionPool _transactionPool;
         private readonly IBlockChainService _blockChainService;
         private readonly ITransactionExecutingService _transactionExecutingService;
@@ -15,10 +17,13 @@ namespace Demo.BlockChainServices
             _transactionPool = transactionPool;
             _blockChainService = blockChainService;
             _transactionExecutingService = transactionExecutingService;
+
+            Logger = NullLogger.Instance;
         }
 
         public IBlock Mine()
         {
+            Logger.Log("[MineService] Start mining.");
             // Generate a block template.
             IBlock block;
             var currentHeight = _blockChainService.GetCurrentHeight();
@@ -36,7 +41,12 @@ namespace Demo.BlockChainServices
             var txs = _transactionPool.GetAllTransactions();
 
             // Execute txs and fill the block.
-            _transactionExecutingService.FillBlock(ref block, txs);
+            var executedTxIds = _transactionExecutingService.FillBlock(ref block, txs);
+            
+            // Remove executed txs.
+            _transactionPool.RemoveTransactions(executedTxIds);
+
+            Logger.Log($"[MineService] Mined a block: \n{block}");
 
             Thread.Sleep(1000);
             return block;

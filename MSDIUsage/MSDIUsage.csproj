@@ -11,4 +11,8 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.0.0-preview8.19405.4" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\BlockChainServices\BlockChainServices.csproj" />
+    </ItemGroup>
+
 </Project>

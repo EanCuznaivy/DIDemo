@@ -13,7 +13,7 @@ namespace Demo.BlockChainServices
 
         public void BroadcastBlock(IBlock block)
         {
-            Logger.Log($"Broadcasting block {block}");
+            Logger.Log($"[NetworkService] Broadcasting block {block}");
         }
     }
 }

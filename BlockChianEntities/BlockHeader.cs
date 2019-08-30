@@ -17,19 +17,20 @@ namespace Demo.BlockEntities
 
         public Hash MerkleTreeRootHash
         {
-            get => Hash.Generate();
+            get => Hash.FromRawBytes(TransactionIds.First().Value.Concat(TransactionIds.Last().Value).ToArray());
             set { }
         }
 
         public Hash GetHash()
         {
-            return Hash.Generate();
+            return Hash.FromRawBytes(PreviousBlockHash.Value.Concat(MerkleTreeRootHash.Value).ToArray());
         }
 
         public override string ToString()
         {
-            var txIds = TransactionIds.Aggregate("", (current, id) => current + id.ToHex() + "\n");
-            return $"\nHeight: {Height}\nPreviousHash: {PreviousBlockHash}\nTransactionIds:{txIds}";
+            var txIds = TransactionIds.Aggregate("", (current, id) => current + id.ToHex() + "\n\t\t");
+            return
+                $"{{\n\tBlockHash: {GetHash()}\n\tHeight: {Height}\n\tPreviousHash: {PreviousBlockHash}\n\tTransactionIds:\n\t\t{txIds}\n}}";
         }
     }
 }

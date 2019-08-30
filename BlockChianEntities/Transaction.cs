@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace Demo.BlockEntities
 {
@@ -13,12 +14,13 @@ namespace Demo.BlockEntities
         public Hash GetTransactionId()
         {
             // 按理说应该序列化交易本身，得到Id
-            return Hash.Generate();
+            return Hash.FromRawBytes(From.Value.Concat(To.Value).Concat(Params).ToArray());
         }
 
         public override string ToString()
         {
-            return $"\nFrom: {From}\nTo: {To}\nTimestamp: {Timestamp}\nMethodName: {MethodName}";
+            return
+                $"{{\n\tTxId: {GetTransactionId()}\n\tFrom: {From}\n\tTo: {To}\n\tTimestamp: {Timestamp}\n\tMethodName: {MethodName}\n}}\n";
         }
     }
 }

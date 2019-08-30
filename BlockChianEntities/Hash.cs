@@ -89,6 +89,10 @@ namespace Demo.BlockEntities
             return new string(c);
         }
 
+        public override string ToString()
+        {
+            return ToHex();
+        }
 
         public static bool operator ==(Hash h1, Hash h2)
         {

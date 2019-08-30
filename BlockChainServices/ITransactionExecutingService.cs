@@ -5,6 +5,6 @@ namespace Demo.BlockChainServices
 {
     public interface ITransactionExecutingService
     {
-        void FillBlock(ref IBlock block, IEnumerable<Transaction> transactions);
+        List<Hash> FillBlock(ref IBlock block, List<Transaction> transactions);
     }
 }

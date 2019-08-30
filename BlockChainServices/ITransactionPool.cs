@@ -7,7 +7,7 @@ namespace Demo.BlockChainServices
     {
         void AddTransaction(Transaction transaction);
         Transaction GetTransactionById(Hash transactionId);
-        IEnumerable<Transaction> GetAllTransactions();
-        void RemoveTransactions(IEnumerable<Transaction> transactions);
+        List<Transaction> GetAllTransactions();
+        void RemoveTransactions(List<Hash> txIds);
     }
 }
