@@ -1,4 +1,5 @@
-﻿using Demo.BlockChainServices;
+﻿using System.Collections.Generic;
+using Demo.BlockChainServices;
 using Demo.BlockEntities;
 
 namespace Demo.PureDIUsage
@@ -9,9 +10,6 @@ namespace Demo.PureDIUsage
         // Pure DI
         public static void Main()
         {
-            // 准备数据：链ID
-            var chainId = Hash.FromString("DNT");
-
             // 出创世区块：通过执行一批交易来初始化整条链，一般包括部署系统合约，如共识合约，多资产合约等，并对系统合约做初步配置
             //   准备交易
             var transactionPool = new TransactionPool
@@ -25,7 +23,21 @@ namespace Demo.PureDIUsage
 
             //   打包创世区块
             //     准备MineService
-            var blockChainService = new BlockChainService(chainId)
+            var blockValidationService = new BlockValidationService(new List<IBlockValidationProvider>
+            {
+                new BlockTransactionValidationProvider
+                {
+                    Logger = new ConsoleLogger()
+                },
+                new BlockBasicInformationValidationProvider
+                {
+                    Logger = new ConsoleLogger()
+                }
+            })
+            {
+                Logger = new ConsoleLogger()
+            };
+            var blockChainService = new BlockChainService(new PureDIChainIdProvider(), blockValidationService)
             {
                 Logger = new ConsoleLogger()
             };

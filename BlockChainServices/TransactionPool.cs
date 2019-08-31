@@ -4,6 +4,7 @@ using Demo.BlockEntities;
 
 namespace Demo.BlockChainServices
 {
+    // AElf里的交易池服务是TxHub类
     public class TransactionPool : ITransactionPool
     {
         public ILogger Logger { get; set; }

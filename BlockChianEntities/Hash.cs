@@ -149,7 +149,7 @@ namespace Demo.BlockEntities
 
         private bool Equals(Hash other)
         {
-            return IsValid == other.IsValid && Equals(Value, other.Value);
+            return other != null && IsValid == other.IsValid && Equals(Value, other.Value);
         }
 
         public override bool Equals(object obj)

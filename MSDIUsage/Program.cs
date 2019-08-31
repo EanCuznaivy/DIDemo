@@ -1,13 +1,14 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Demo.BlockChainServices;
 using Demo.BlockEntities;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Demo.MSDIUsage
 {
-    class Program
+    public static class Program
     {
-        static void Main(string[] args)
+        public static void Main()
         {
             // MS.DI中，DI容器的生成分为两步：
             // 先初始化ServiceCollection，进行一系列注册
@@ -15,7 +16,7 @@ namespace Demo.MSDIUsage
             var serviceCollection = new ServiceCollection();
 
             // 配置依赖关系
-            serviceCollection.AddSingleton<IBlockChainService>(new BlockChainService(Hash.FromString("DHT")));
+            serviceCollection.AddSingleton<IBlockChainService, BlockChainService>();
             serviceCollection.AddSingleton<ITransactionPool, TransactionPool>();
 
             serviceCollection.AddTransient<IMineService, MineService>();
@@ -24,6 +25,12 @@ namespace Demo.MSDIUsage
 
             serviceCollection.AddTransient<ConsoleLoggerWithTimestamp>();
             serviceCollection.AddTransient<ILogger, ConsoleLoggerWithTimestampDecorator>();
+            serviceCollection.AddTransient<IChainIdProvider, MSDIChainIdProvider>();
+            serviceCollection.AddTransient<IBlockValidationService, BlockValidationService>();
+            
+            // 有新的验证逻辑的时候，添加一个IBlockValidationProvider的实现，在这里添加依赖关系就行了
+            serviceCollection.AddSingleton<IBlockValidationProvider, BlockTransactionValidationProvider>();
+            serviceCollection.AddSingleton<IBlockValidationProvider, BlockBasicInformationValidationProvider>();
 
             var container = serviceCollection.BuildServiceProvider();
 
@@ -34,11 +41,13 @@ namespace Demo.MSDIUsage
                 where !type.IsInterface
                 where type.GetProperties().Any(p => p.PropertyType == typeof(ILogger))
                 select type;
+            var logger = container.GetRequiredService<ILogger>();
             foreach (var loggingType in loggingTypes.ToList())
             {
-                var loggerProperty = loggingType.GetProperties().Single(p => p.PropertyType == typeof(ILogger));
-                loggerProperty.SetValue(container.GetRequiredService(loggingType.GetInterfaces().First()),
-                    container.GetRequiredService<ILogger>());
+                var loggerProperty = loggingType.GetProperty("Logger");
+                var targetInstance = container.GetServices(loggingType.GetInterfaces().First())
+                    .First(i => i.GetType() == loggingType);
+                loggerProperty?.SetValue(targetInstance, logger);
             }
 
             using (var scope = container.CreateScope())

@@ -5,7 +5,7 @@ namespace Demo.BlockEntities
 {
     public class TransactionGenerationHelper
     {
-        public static List<Transaction> GetGenesisTransactions()
+        public static IEnumerable<Transaction> GetGenesisTransactions()
         {
             return new List<Transaction>
             {
@@ -28,7 +28,7 @@ namespace Demo.BlockEntities
             };
         }
 
-        public static List<Transaction> GetSomeRandomTransactions()
+        public static IEnumerable<Transaction> GetSomeRandomTransactions()
         {
             return new List<Transaction>
             {

@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 
 namespace Demo.BlockEntities
 {
-    // TODO: 应该由public key生成
+    // TODO: 应该通过非对称密钥对中的public key生成，而非自己填二进制数组
     public class Address
     {
         public static readonly Address Zero = FromByteArray(Enumerable.Range(0, Constants.HashByteArrayLength)
