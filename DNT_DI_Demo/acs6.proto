@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package acs6;
+import "aelf/options.proto";
+import "aelf/core.proto";
+
+option (aelf.identity) = "acs6";
+
+// commit-reveal方案产生的随机数，要求申请随机数的用户分两步获取
+service RandomNumberProviderContract {
+    rpc RequestRandomNumber (RequestRandomNumberInput) returns (RandomNumberOrder) {
+    }
+    rpc GetRandomNumber (aelf.Hash) returns (aelf.Hash) {
+    }
+}
+
+message RequestRandomNumberInput {
+    sint64 minimum_block_height = 1;
+}
+
+message RandomNumberOrder {
+    sint64 block_height = 1;// Orderer is possible to get a random number after this height.
+    aelf.Hash token_hash = 2;// Token to get the random number.
+}

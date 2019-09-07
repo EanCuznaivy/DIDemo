@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Demo.BlockEntities
 {
-    public class Transaction
+    public class Transaction : ITransaction
     {
         public Address From { get; set; }
         public Address To { get; set; }

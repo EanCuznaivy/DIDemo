@@ -34,7 +34,7 @@ namespace Demo.BlockChainServices
         // TODO: 执行过程
         private bool ExecuteTransaction(Transaction transaction)
         {
-            return true;
+            return transaction != null && transaction.GetTransactionId() != Hash.Empty;
         }
     }
 }

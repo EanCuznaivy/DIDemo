@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package AEDPoSImpl;
+
+import "aelf/options.proto";
+import "acs4.proto";
+import "acs6.proto";
+import "aedpos_contract.proto";
+
+option csharp_namespace = "AElf.Contracts.Consensus.AEDPoS";
+
+// 在AElf的智能合约中，定义了一系列的AElf Contract Standard
+// 其中ACS4中定义了我们认为一个AElf的共识合约应该实现的一些标准接口，AElf是可以通过替换智能合约来替换共识的
+// 我们会在链上直接调用合约中的标准接口方法来完成共识，包括出块逻辑和验证逻辑
+// ACS6为使用commit-reveal方案的随机数合约的标准接口
+// 实际上的共识合约实现了ACS4和ACS6，但是相应的链上代码或者跨合约调用只需要生成自己关心的stub即可
+service AEDPoSContractImpl {
+    option (aelf.csharp_state) = "AElf.Contracts.Consensus.AEDPoS.AEDPoSContractState";
+    option (aelf.base) = "acs4.proto";
+    option (aelf.base) = "acs6.proto";
+    option (aelf.base) = "aedpos_contract.proto";
+}

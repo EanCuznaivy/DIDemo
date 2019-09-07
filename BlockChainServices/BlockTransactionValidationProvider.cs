@@ -12,29 +12,34 @@ namespace Demo.BlockChainServices
             Logger = NullLogger.Instance;
         }
 
-        public bool ValidateBlockBeforeAppend(IBlock block)
+        public BlockForValidation ValidateBlockBeforeAppend(IBlock block)
         {
             Logger.Log("[BlockTransactionValidationProvider] Validating.\n");
+
+            var blockForValidation = new BlockForValidation(block);
 
             var txCount = block.BlockHeader.TransactionIds.Count;
             if (txCount == 0)
             {
-                return false;
+                blockForValidation.ValidationMessage = "No tx.";
+                return blockForValidation;
             }
 
             if (block.BlockBody.Transactions.Count != txCount)
             {
-                return false;
+                blockForValidation.ValidationMessage = "Tx count not match.";
+                return blockForValidation;
             }
 
             var txIdsInHeader = block.BlockHeader.TransactionIds.Select(tx => tx.ToHex());
             var txIdsInBody = block.BlockBody.Transactions.Select(tx => tx.GetTransactionId().ToHex());
             if (txIdsInHeader.Intersect(txIdsInBody).Count() != txCount)
             {
-                return false;
+                blockForValidation.ValidationMessage = "Incorrect txs.";
             }
 
-            return true;
+            blockForValidation.Success = true;
+            return blockForValidation;
         }
     }
 }

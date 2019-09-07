@@ -4,6 +4,6 @@ namespace Demo.BlockChainServices
 {
     public interface IBlockValidationProvider
     {
-        bool ValidateBlockBeforeAppend(IBlock block);
+        BlockForValidation ValidateBlockBeforeAppend(IBlock block);
     }
 }

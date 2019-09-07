@@ -17,7 +17,17 @@ namespace Demo.BlockChainServices
 
         public bool ValidateBlockBeforeAppend(IBlock block)
         {
-            return _blockValidationProviders.All(provider => provider.ValidateBlockBeforeAppend(block));
+            var validatedBlocks = _blockValidationProviders
+                .Select(provider => provider.ValidateBlockBeforeAppend(block)).ToList();
+
+            if (validatedBlocks.All(b => b.Success))
+            {
+                return true;
+            }
+
+            validatedBlocks.Where(b => !b.Success).ToList().ForEach(b => Logger.Log($"{b}\n: {b.ValidationMessage}"));
+
+            return false;
         }
     }
 }

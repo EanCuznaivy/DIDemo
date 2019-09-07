@@ -44,6 +44,8 @@ namespace Demo.MSDIUsage
             var logger = container.GetRequiredService<ILogger>();
             foreach (var loggingType in loggingTypes.ToList())
             {
+                // 看起来"Logger"像是hard code过来的，但是也可以给这种方式起一个好听一点的名字：
+                // Convention over configuration，惯例优先原则。
                 var loggerProperty = loggingType.GetProperty("Logger");
                 var targetInstance = container.GetServices(loggingType.GetInterfaces().First())
                     .First(i => i.GetType() == loggingType);

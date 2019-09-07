@@ -12,7 +12,9 @@ namespace Demo.MSDIUsage
         {
             _consoleLoggerWithTimestamp = consoleLoggerWithTimestamp;
         }
-        
+
+        // [OCP]
+        // 对ConsoleLoggerWithTimestamp进行了扩展，而不用修改ConsoleLoggerWithTimestamp本身的代码。
         public void Log(string message, [CallerMemberName] string caller = null)
         {
             _consoleLoggerWithTimestamp.Log(message, caller);

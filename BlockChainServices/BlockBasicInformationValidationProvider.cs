@@ -1,4 +1,3 @@
-using System;
 using Demo.BlockEntities;
 
 namespace Demo.BlockChainServices
@@ -12,29 +11,35 @@ namespace Demo.BlockChainServices
             Logger = NullLogger.Instance;
         }
 
-        public bool ValidateBlockBeforeAppend(IBlock block)
+        public BlockForValidation ValidateBlockBeforeAppend(IBlock block)
         {
             Logger.Log("[BlockBasicInformationValidationProvider] Validating.\n");
 
-            if (block == null || block.BlockHeader == null || block.BlockBody == null)
+            var blockForValidation = new BlockForValidation(block);
+
+            if (block?.BlockHeader == null || block.BlockBody == null)
             {
-                return false;
+                blockForValidation.ValidationMessage = "Null";
+                return blockForValidation;
             }
 
             var blockHeader = block.BlockHeader;
             if (blockHeader.Height == 0 || blockHeader.PreviousBlockHash == null ||
                 blockHeader.MerkleTreeRootHash == null)
             {
-                return false;
+                blockForValidation.ValidationMessage = "Incorrect information.";
+                return blockForValidation;
             }
 
             var blockBody = block.BlockBody;
             if (blockBody.Transactions == null)
             {
-                return false;
+                blockForValidation.ValidationMessage = "Transactions is null.";
+                return blockForValidation;
             }
 
-            return true;
+            blockForValidation.Success = true;
+            return blockForValidation;
         }
     }
 }
