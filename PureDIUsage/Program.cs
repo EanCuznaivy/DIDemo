@@ -6,7 +6,8 @@ namespace Demo.PureDIUsage
 {
     public static class Program
     {
-        // Composition Root
+        // Composition Root - 组合根：
+        // 设计模式。在程序的入口处进行抽象-具体的依赖关系配置。
         // Pure DI
         public static void Main()
         {
